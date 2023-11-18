@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://bnw3vdirjf45d"]
+[gd_scene load_steps=4 format=3 uid="uid://bnw3vdirjf45d"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_d4s7p"]
 
@@ -9,20 +9,52 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 
+[sub_resource type="LabelSettings" id="LabelSettings_hmib5"]
+font_size = 64
+
 [node name="Main" type="Node"]
 script = ExtResource("1_d4s7p")
 
-[node name="Container1" type="VBoxContainer" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+follow_focus = true
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 120
+alignment = 1
+
+[node name="Container1" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
-offset_left = 65.0
-offset_top = 2.0
-offset_right = 365.0
-offset_bottom = 985.0
-theme_override_constants/separation = 6
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 7
 alignment = 1
 metadata/_edit_group_ = true
 
-[node name="ImagePanel" type="Panel" parent="Container1"]
+[node name="ImagePanel" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
 clip_contents = true
 custom_minimum_size = Vector2(204, 204)
 layout_mode = 2
@@ -30,49 +62,49 @@ size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
 metadata/_edit_group_ = true
 
-[node name="Image" type="TextureRect" parent="Container1/ImagePanel"]
+[node name="Image" type="TextureRect" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1/ImagePanel"]
 layout_mode = 0
 offset_left = 2.0
 offset_top = 2.0
 offset_right = 202.0
 offset_bottom = 202.0
 
-[node name="LoadImage" type="Button" parent="Container1"]
+[node name="LoadImage" type="Button" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Load Image"
 
-[node name="Label" type="Label" parent="Container1"]
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
 layout_mode = 2
 text = "Навчальна матриця 1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EMatrix" type="TextEdit" parent="Container1"]
+[node name="EMatrix" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
 custom_minimum_size = Vector2(300, 150)
 layout_mode = 2
 
-[node name="NDKLabel" type="Label" parent="Container1"]
+[node name="NDKLabel" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
 layout_mode = 2
 text = "NDK"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="NDK" type="TextEdit" parent="Container1"]
+[node name="NDK" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
 custom_minimum_size = Vector2(300, 35)
 layout_mode = 2
 
-[node name="BMatrixLabel" type="Label" parent="Container1"]
+[node name="BMatrixLabel" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
 layout_mode = 2
 text = "Бінарна матриця 1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BMatrix" type="TextEdit" parent="Container1"]
+[node name="BMatrix" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
 custom_minimum_size = Vector2(300, 150)
 layout_mode = 2
 
-[node name="BImagePanel" type="Panel" parent="Container1"]
+[node name="BImagePanel" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
 clip_contents = true
 custom_minimum_size = Vector2(204, 204)
 layout_mode = 2
@@ -80,24 +112,67 @@ size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
 metadata/_edit_group_ = true
 
-[node name="Image" type="TextureRect" parent="Container1/BImagePanel"]
+[node name="Image" type="TextureRect" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1/BImagePanel"]
 layout_mode = 0
 offset_left = 2.0
 offset_top = 2.0
 offset_right = 202.0
 offset_bottom = 202.0
 
-[node name="Container2" type="VBoxContainer" parent="."]
-custom_minimum_size = Vector2(100, 100)
-offset_left = 629.0
+[node name="EVLabel" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
+layout_mode = 2
+text = "Еталонний вектор"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EV" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+
+[node name="EVImagePanel" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
+clip_contents = true
+custom_minimum_size = Vector2(204, 14)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Image" type="TextureRect" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1/EVImagePanel"]
+layout_mode = 0
+offset_left = 2.0
 offset_top = 2.0
-offset_right = 929.0
-offset_bottom = 985.0
-theme_override_constants/separation = 6
+offset_right = 202.0
+offset_bottom = 12.0
+
+[node name="SKLabel" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
+layout_mode = 2
+text = "SK"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SK" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+
+[node name="SK2" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+
+[node name="Calculate" type="Button" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Calculate"
+
+[node name="Container2" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 7
 alignment = 1
 metadata/_edit_group_ = true
 
-[node name="ImagePanel" type="Panel" parent="Container2"]
+[node name="ImagePanel" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
 clip_contents = true
 custom_minimum_size = Vector2(204, 204)
 layout_mode = 2
@@ -105,49 +180,49 @@ size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
 metadata/_edit_group_ = true
 
-[node name="Image" type="TextureRect" parent="Container2/ImagePanel"]
+[node name="Image" type="TextureRect" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2/ImagePanel"]
 layout_mode = 0
 offset_left = 2.0
 offset_top = 2.0
 offset_right = 202.0
 offset_bottom = 202.0
 
-[node name="LoadImage" type="Button" parent="Container2"]
+[node name="LoadImage" type="Button" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Load Image"
 
-[node name="Label" type="Label" parent="Container2"]
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
 layout_mode = 2
 text = "Навчальна матриця 2"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EMatrix" type="TextEdit" parent="Container2"]
+[node name="EMatrix" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
 custom_minimum_size = Vector2(300, 150)
 layout_mode = 2
 
-[node name="NDKLabel" type="Label" parent="Container2"]
+[node name="NDKLabel" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
 layout_mode = 2
 text = "VDK"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VDK" type="TextEdit" parent="Container2"]
+[node name="VDK" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
 custom_minimum_size = Vector2(300, 35)
 layout_mode = 2
 
-[node name="BMatrixLabel" type="Label" parent="Container2"]
+[node name="BMatrixLabel" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
 layout_mode = 2
 text = "Бінарна матриця 2"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BMatrix" type="TextEdit" parent="Container2"]
+[node name="BMatrix" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
 custom_minimum_size = Vector2(300, 150)
 layout_mode = 2
 
-[node name="BImagePanel" type="Panel" parent="Container2"]
+[node name="BImagePanel" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
 clip_contents = true
 custom_minimum_size = Vector2(204, 204)
 layout_mode = 2
@@ -155,24 +230,234 @@ size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
 metadata/_edit_group_ = true
 
-[node name="Image" type="TextureRect" parent="Container2/BImagePanel"]
+[node name="Image" type="TextureRect" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2/BImagePanel"]
 layout_mode = 0
 offset_left = 2.0
 offset_top = 2.0
 offset_right = 202.0
 offset_bottom = 202.0
 
-[node name="Calculate" type="Button" parent="."]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -40.0
-offset_top = 220.0
-offset_right = 40.0
-offset_bottom = 251.0
-grow_horizontal = 2
-text = "Calculate"
+[node name="EVLabel" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
+layout_mode = 2
+text = "Еталонний вектор"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[connection signal="pressed" from="Container1/LoadImage" to="." method="_on_load_image_1_pressed"]
-[connection signal="pressed" from="Container2/LoadImage" to="." method="_on_load_image_2_pressed"]
-[connection signal="pressed" from="Calculate" to="." method="_on_calculate"]
+[node name="EV" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+
+[node name="EVImagePanel" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
+clip_contents = true
+custom_minimum_size = Vector2(204, 14)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Image" type="TextureRect" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2/EVImagePanel"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 202.0
+offset_bottom = 12.0
+
+[node name="SKLabel" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
+layout_mode = 2
+text = "SK_PARA
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SK" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+
+[node name="SK2" type="TextEdit" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+columns = 3
+
+[node name="Cell1" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Cell2" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Image" type="TextureRect" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer/Cell2"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 102.0
+offset_bottom = 102.0
+
+[node name="Cell3" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Image" type="TextureRect" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer/Cell3"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 102.0
+offset_bottom = 102.0
+
+[node name="Cell4" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Image" type="TextureRect" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer/Cell4"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 102.0
+offset_bottom = 102.0
+
+[node name="Cell5" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer/Cell5"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -45.5
+offset_right = 20.0
+offset_bottom = 45.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "-"
+label_settings = SubResource("LabelSettings_hmib5")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Cell6" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer/Cell6"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -45.5
+offset_right = 20.0
+offset_bottom = 45.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "0"
+label_settings = SubResource("LabelSettings_hmib5")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Cell7" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Image" type="TextureRect" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer/Cell7"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 102.0
+offset_bottom = 102.0
+
+[node name="Cell8" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer/Cell8"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -45.5
+offset_right = 20.0
+offset_bottom = 45.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "0
+"
+label_settings = SubResource("LabelSettings_hmib5")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Cell9" type="Panel" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_5yqnk")
+metadata/_edit_group_ = true
+
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/GridContainer/Cell9"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -45.5
+offset_right = 20.0
+offset_bottom = 45.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "-"
+label_settings = SubResource("LabelSettings_hmib5")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1/LoadImage" to="." method="_on_load_image_1_pressed"]
+[connection signal="pressed" from="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Calculate" to="." method="_on_calculate"]
+[connection signal="pressed" from="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2/LoadImage" to="." method="_on_load_image_2_pressed"]
