@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bnw3vdirjf45d"]
+[gd_scene load_steps=7 format=3 uid="uid://bnw3vdirjf45d"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_d4s7p"]
+[ext_resource type="PackedScene" uid="uid://dak6vceae7a52" path="res://table_row.tscn" id="2_acytl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5yqnk"]
 draw_center = false
@@ -11,6 +12,12 @@ border_width_bottom = 2
 
 [sub_resource type="LabelSettings" id="LabelSettings_hmib5"]
 font_size = 64
+
+[sub_resource type="LabelSettings" id="LabelSettings_vl50f"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_obxp2"]
+font_size = 24
 
 [node name="Main" type="Node"]
 script = ExtResource("1_d4s7p")
@@ -37,7 +44,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 15
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -457,6 +464,44 @@ text = "-"
 label_settings = SubResource("LabelSettings_hmib5")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TableName0" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Точнісні характеристики та КФЕ для 1 класу"
+label_settings = SubResource("LabelSettings_vl50f")
+horizontal_alignment = 1
+
+[node name="TableHeader0" parent="ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_acytl")]
+layout_mode = 2
+
+[node name="Table0" type="ScrollContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(576, 320)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/Table0"]
+layout_mode = 2
+
+[node name="TableName1" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Точнісні характеристики та КФЕ для 2 класу"
+label_settings = SubResource("LabelSettings_obxp2")
+horizontal_alignment = 1
+
+[node name="TableHeader1" parent="ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_acytl")]
+layout_mode = 2
+
+[node name="Table1" type="ScrollContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(576, 320)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/Table1"]
+layout_mode = 2
 
 [connection signal="pressed" from="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1/LoadImage" to="." method="_on_load_image_1_pressed"]
 [connection signal="pressed" from="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Calculate" to="." method="_on_calculate"]

@@ -1,10 +1,14 @@
 extends Node
 
+
+
 @onready var containers: Array[Node] = [
 	$ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1,
 	$ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2
 ];
 @onready var grid: Array[Node] = $ScrollContainer/MarginContainer/VBoxContainer/GridContainer.get_children();
+
+var row_scene: PackedScene = preload("res://table_row.tscn")
 
 @export var delta: int = 50;
 
@@ -15,6 +19,11 @@ var VDK: PackedInt32Array;
 var EV: Array[PackedInt32Array];
 var SK: Array[PackedInt32Array];
 var DK: Array[PackedInt32Array];
+var D1: Array[PackedFloat32Array];
+var D2: Array[PackedFloat32Array];
+var Alpha: Array[PackedFloat32Array];
+var Beta: Array[PackedFloat32Array];
+var KFE: Array[PackedFloat32Array];
 var width: int = 100;
 var height: int = 100;
 var n_class: int = 2;
@@ -25,17 +34,26 @@ func _ready() -> void:
 	EV.resize(n_class);
 	NDK.resize(width);
 	VDK.resize(width);
+	SK.resize(n_class * 2);
 	DK.resize(n_class);
+	D1.resize(n_class);
+	D2.resize(n_class);
+	Alpha.resize(n_class);
+	Beta.resize(n_class);
+	KFE.resize(n_class);
 	
 	for c in n_class:
 		EM[c].resize(width * height);
 		BM[c].resize(width * height);
 		EV[c].resize(width);
+		SK[c * 2].resize(height);
+		SK[c * 2 + 1].resize(height);
 		DK[c].resize(n_class);
-	
-	SK.resize(4);
-	for i in 4:
-		SK[i].resize(height);
+		D1[c].resize(height);
+		D2[c].resize(height);
+		Alpha[c].resize(height);
+		Beta[c].resize(height);
+		KFE[c].resize(height);
 
 func open_file_dialog(fcall: Callable) -> void:
 	var fileDialog = FileDialog.new();
@@ -103,6 +121,30 @@ func calc_sk(ind: int, neigh: int) -> void:
 		SK[ind * 2][y] = d0;
 		SK[ind * 2 + 1][y] = d1;
 
+func calc_characteristics(ind: int) -> void:
+	var k0: int;
+	var k1: int;
+	for y in height:
+		k0 = 0;
+		k1 = 0;
+		for x in width:
+			if SK[ind * 2][x] <= y:
+				k0 += 1;
+			if SK[ind * 2 + 1][x] <= y:
+				k1 += 1;
+		D1[ind][y] = float(k0) / height;
+		D2[ind][y] = float(height - k1) / height;
+		Alpha[ind][y] = float(height - k0) / height;
+		Beta[ind][y] = float(k1) / height;
+	
+	for y in height:
+		var a := Alpha[ind][y];
+		var b := Beta[ind][y];
+		if D1[ind][y] >= 0.5 && D2[ind][y] >= 0.5:
+			KFE[ind][y] = (log((2 - a - b) / (a + b)) / log(2)) * (1 - a - b);
+		else:
+			KFE[ind][y] = 0;
+
 func _on_image1_selected(path: String) -> void:
 	var image: Image = Image.load_from_file(path);
 	calculate_educational_matrix(0, image);
@@ -126,6 +168,9 @@ func _on_calculate() -> void:
 	
 	calc_sk(0, 1);
 	calc_sk(1, 0);
+	
+	for c in n_class:
+		calc_characteristics(c);
 	
 	render();
 
@@ -187,6 +232,19 @@ func render() -> void:
 			d = str(DK[c][dist_class]) if dist_class != c else "-";
 			grid[(c + 1) * (n_class + 1) + dist_class + 1].get_node("Label").text = d;
 		
+		var table: VBoxContainer = get_node("ScrollContainer/MarginContainer/VBoxContainer/Table%d/VBoxContainer"%[c]);
+		for y in height:
+			var row = row_scene.instantiate();
+			var kfe: float = KFE[c][y];
+			table.add_child(row);
+			row.cells[0].text = str(y);
+			row.cells[1].text = "%.2f" % [ D1[c][y] ];
+			row.cells[2].text = "%.2f" % [ D2[c][y] ];
+			row.cells[3].text = "%.2f" % [ Alpha[c][y] ];
+			row.cells[4].text = "%.2f" % [ Beta[c][y] ];
+			row.cells[5].text = "%.2f" % [ kfe ];
+			if kfe > 0:
+				row.set_modulate(Color.RED);
 	
 	#print ndk & vdk to user
 	strrow = "";
