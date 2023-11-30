@@ -293,7 +293,7 @@ func render() -> void:
 		
 		#render&write Characteristics table
 		var kfe_file: FileAccess = FileAccess.open("result/kfe%d.csv"%[c+1], FileAccess.WRITE);
-		kfe_file.store_csv_line(PackedStringArray(["r", "d1", "d2", "Alpha", "Beta", "KFE"]));
+		kfe_file.store_csv_line(PackedStringArray(["r", "KFE"]));
 		var table: VBoxContainer = get_node("ScrollContainer/MarginContainer/VBoxContainer/Table%d/VBoxContainer"%[c]);
 		for y in height:
 			var row = row_scene.instantiate();
@@ -307,20 +307,12 @@ func render() -> void:
 			row.cells[5].text = "%.2f" % [ kfe ];
 			if kfe > 0:
 				row.set_modulate(Color.RED);
-			kfe_file.store_csv_line(
-				PackedStringArray(
-					[row.cells[0].text, 
-					 row.cells[1].text, 
-					 row.cells[2].text, 
-					 row.cells[3].text, 
-					 row.cells[4].text,
-					 row.cells[5].text]
-					)
+			kfe_file.store_csv_line(PackedStringArray([str(y), "%.2f" % [ kfe ]])
 			);
 		
 		kfe_file.close();
 		#render optimal redius
-		get_node("ScrollContainer/MarginContainer/VBoxContainer/ROPT%d"%c).text = ropt_label%[c, ROPT[c]];
+		get_node("ScrollContainer/MarginContainer/VBoxContainer/ROPT%d"%c).text = ropt_label%[c + 1, ROPT[c]];
 	
 	#print ndk & vdk to user
 	strrow = "";
