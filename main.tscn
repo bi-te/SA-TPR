@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bnw3vdirjf45d"]
+[gd_scene load_steps=9 format=3 uid="uid://bnw3vdirjf45d"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_d4s7p"]
 [ext_resource type="PackedScene" uid="uid://dak6vceae7a52" path="res://table_row.tscn" id="2_acytl"]
@@ -10,10 +10,16 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 
+[sub_resource type="LabelSettings" id="LabelSettings_6q6f8"]
+font_size = 24
+
 [sub_resource type="LabelSettings" id="LabelSettings_hmib5"]
 font_size = 64
 
 [sub_resource type="LabelSettings" id="LabelSettings_vl50f"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_qjtvt"]
 font_size = 24
 
 [sub_resource type="LabelSettings" id="LabelSettings_obxp2"]
@@ -165,11 +171,20 @@ layout_mode = 2
 custom_minimum_size = Vector2(300, 35)
 layout_mode = 2
 
-[node name="Calculate" type="Button" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 150
+
+[node name="Calculate" type="Button" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+theme_override_font_sizes/font_size = 24
 text = "Calculate"
+
+[node name="DeltaLabel" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_6q6f8")
 
 [node name="Container2" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
@@ -484,6 +499,12 @@ horizontal_scroll_mode = 0
 [node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/Table0"]
 layout_mode = 2
 
+[node name="ROPT0" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_qjtvt")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="TableName1" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Точнісні характеристики та КФЕ для 2 класу"
@@ -503,6 +524,12 @@ horizontal_scroll_mode = 0
 [node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/Table1"]
 layout_mode = 2
 
+[node name="ROPT1" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_qjtvt")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="pressed" from="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container1/LoadImage" to="." method="_on_load_image_1_pressed"]
-[connection signal="pressed" from="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Calculate" to="." method="_on_calculate"]
+[connection signal="pressed" from="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Calculate" to="." method="_on_calculate"]
 [connection signal="pressed" from="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Container2/LoadImage" to="." method="_on_load_image_2_pressed"]

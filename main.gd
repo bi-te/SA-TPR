@@ -8,12 +8,15 @@ extends Node
 ];
 @onready var grid: Array[Node] = $ScrollContainer/MarginContainer/VBoxContainer/GridContainer.get_children();
 
-var row_scene: PackedScene = preload("res://table_row.tscn")
+const ropt_label: String = "Оптимальний радіус для %d-го класу = %d";
+const delta_label: String = "Delta = %d";
+const row_scene: PackedScene = preload("res://table_row.tscn")
 
 @export var delta: int = 50;
 
 var EM: Array[PackedInt32Array];
 var BM: Array[PackedByteArray];
+var AVG: PackedInt32Array;
 var NDK: PackedInt32Array;
 var VDK: PackedInt32Array;
 var EV: Array[PackedInt32Array];
@@ -24,6 +27,7 @@ var D2: Array[PackedFloat32Array];
 var Alpha: Array[PackedFloat32Array];
 var Beta: Array[PackedFloat32Array];
 var KFE: Array[PackedFloat32Array];
+var ROPT: Array[int];
 var width: int = 100;
 var height: int = 100;
 var n_class: int = 2;
@@ -32,6 +36,7 @@ func _ready() -> void:
 	EM.resize(n_class);
 	BM.resize(n_class);
 	EV.resize(n_class);
+	AVG.resize(width);
 	NDK.resize(width);
 	VDK.resize(width);
 	SK.resize(n_class * 2);
@@ -41,6 +46,7 @@ func _ready() -> void:
 	Alpha.resize(n_class);
 	Beta.resize(n_class);
 	KFE.resize(n_class);
+	ROPT.resize(n_class);
 	
 	for c in n_class:
 		EM[c].resize(width * height);
@@ -75,14 +81,18 @@ func calculate_educational_matrix(em_ind: int, image: Image) -> void:
 			var pixel := image.get_pixel(x, y);
 			EM[em_ind][x + y * width] = round((0.2989 * pixel.r8 + 0.5870 * pixel.g8 + 0.1140 * pixel.b8));
 
-func calc_vdk_ndk(em_ind: int) -> void:
+func calc_avg(em_ind: int) -> void:
 	var sum: float;
 	for x in width:
 		sum = 0;
 		for y in height:
 			sum += EM[em_ind][x + y * width];
-		NDK[x] = round(sum / width) - delta;
-		VDK[x] = round(sum / width) + delta;
+		AVG[x] = round(sum / width);
+
+func calc_vdk_ndk() -> void:
+	for x in width:
+		NDK[x] = AVG[x] - delta;
+		VDK[x] = AVG[x] + delta;
 
 func calc_binary_matrix(ind: int) -> void:
 	for x in width:
@@ -121,7 +131,7 @@ func calc_sk(ind: int, neigh: int) -> void:
 		SK[ind * 2][y] = d0;
 		SK[ind * 2 + 1][y] = d1;
 
-func calc_characteristics(ind: int) -> void:
+func calc_characteristics(ind: int) -> int:
 	var k0: int;
 	var k1: int;
 	for y in height:
@@ -137,6 +147,8 @@ func calc_characteristics(ind: int) -> void:
 		Alpha[ind][y] = float(height - k0) / height;
 		Beta[ind][y] = float(k1) / height;
 	
+	var y_max: int = 0;
+	var kfe_max: float = 0;
 	for y in height:
 		var a := Alpha[ind][y];
 		var b := Beta[ind][y];
@@ -144,6 +156,10 @@ func calc_characteristics(ind: int) -> void:
 			KFE[ind][y] = (log((2 - a - b) / (a + b)) / log(2)) * (1 - a - b);
 		else:
 			KFE[ind][y] = 0;
+		if KFE[ind][y] > kfe_max:
+			y_max = y;
+			kfe_max = KFE[ind][y];
+	return y_max;
 
 func _on_image1_selected(path: String) -> void:
 	var image: Image = Image.load_from_file(path);
@@ -155,10 +171,52 @@ func _on_image2_selected(path: String) -> void:
 	calculate_educational_matrix(1, image);
 	containers[1].get_node("ImagePanel/Image").texture = ImageTexture.create_from_image(image);
 
-func _on_calculate() -> void:
-	calc_vdk_ndk(0);
+func _on_calculate() -> void:	
+	calc_avg(0);
+	var desired_delta: int;
+	var delta_max: int = 80;
+	var delta_min: int = 20;
+	var radius: int;
+	var kfe_max: Dictionary;
 	
-	var sk: Array[PackedInt32Array];
+	var delta_kfe_file: FileAccess = FileAccess.open("result/delta_kfe.csv", FileAccess.WRITE);
+	delta_kfe_file.store_csv_line(PackedStringArray(["delta", "KFE 1", "KFE 2"]));
+	
+	for delt in range(delta_max, delta_min, -1):
+		delta = delt;
+		calc_vdk_ndk();
+		
+		for c in n_class:
+			calc_binary_matrix(c);
+			calc_etalon_vector(c);
+		
+		for c in n_class:
+			calc_dk(c);
+		
+		calc_sk(0, 1);
+		calc_sk(1, 0);
+		
+		var kfe_max_arr: Array;
+		kfe_max_arr.resize(n_class);
+		for c in n_class:
+			radius = calc_characteristics(c);
+			kfe_max_arr[c] = KFE[c][radius];
+		kfe_max[delta] = kfe_max_arr;
+		delta_kfe_file.store_csv_line(PackedStringArray([delta, kfe_max_arr[0], kfe_max_arr[1]]));
+	
+	delta_kfe_file.close();
+	
+	var max_summ: float = 0;
+	for delt in range(delta_max, delta_min, -1):
+		var summ: float = 0;
+		for c in n_class:
+			summ += kfe_max[delt][c];
+		if summ > max_summ:
+			delta = delt;
+			max_summ = summ;
+	
+	calc_vdk_ndk();
+	
 	for c in n_class:
 		calc_binary_matrix(c);
 		calc_etalon_vector(c);
@@ -170,11 +228,12 @@ func _on_calculate() -> void:
 	calc_sk(1, 0);
 	
 	for c in n_class:
-		calc_characteristics(c);
+		ROPT[c] = calc_characteristics(c);
 	
 	render();
 
 func render() -> void:
+	$ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/DeltaLabel.text = delta_label%[delta];
 	var strrow: String;
 	var strrow2: String;
 	for c in n_class:
@@ -232,6 +291,9 @@ func render() -> void:
 			d = str(DK[c][dist_class]) if dist_class != c else "-";
 			grid[(c + 1) * (n_class + 1) + dist_class + 1].get_node("Label").text = d;
 		
+		#render&write Characteristics table
+		var kfe_file: FileAccess = FileAccess.open("result/kfe%d.csv"%[c+1], FileAccess.WRITE);
+		kfe_file.store_csv_line(PackedStringArray(["r", "d1", "d2", "Alpha", "Beta", "KFE"]));
 		var table: VBoxContainer = get_node("ScrollContainer/MarginContainer/VBoxContainer/Table%d/VBoxContainer"%[c]);
 		for y in height:
 			var row = row_scene.instantiate();
@@ -245,6 +307,20 @@ func render() -> void:
 			row.cells[5].text = "%.2f" % [ kfe ];
 			if kfe > 0:
 				row.set_modulate(Color.RED);
+			kfe_file.store_csv_line(
+				PackedStringArray(
+					[row.cells[0].text, 
+					 row.cells[1].text, 
+					 row.cells[2].text, 
+					 row.cells[3].text, 
+					 row.cells[4].text,
+					 row.cells[5].text]
+					)
+			);
+		
+		kfe_file.close();
+		#render optimal redius
+		get_node("ScrollContainer/MarginContainer/VBoxContainer/ROPT%d"%c).text = ropt_label%[c, ROPT[c]];
 	
 	#print ndk & vdk to user
 	strrow = "";
